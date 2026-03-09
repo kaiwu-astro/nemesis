@@ -180,20 +180,19 @@ def run_simulation(
 
         with open(init_params, 'r') as f:
             iparams = f.readlines()
-            diag_dt = iparams[3].split(":")[1].split("yr")[0]
-            brdg_dt = iparams[4].split(":")[1].split("yr")[0]
-            end_time = iparams[5].split(":")[1].split("Myr")[0]
-
-            diag_dt = float(diag_dt) | units.yr
-            brdg_dt = float(brdg_dt) | units.yr
-            end_time = float(end_time) | units.Myr
+            diag_dt = float(iparams[3].split(":")[1].split("yr")[0]) | units.yr
+            brdg_dt = float(iparams[4].split(":")[1].split("yr")[0]) | units.yr
 
         if brdg_dt != dtbridge:
-            print("WARNING: Bridge timestep is not the same as before.")
+            raise ValueError(
+                "Error: Bridge timestep is different from previous run. "
+                "Please use the same timestep or start a new simulation."
+                )
         if diag_dt != dt_diag:
-            print("WARNING: Diagnostic timestep is not the same as before.")
-        if end_time != tend:
-            print("WARNING: End time is not the same as before.")
+            raise ValueError(
+                "Error: Diagnostic timestep is different from previous run. "
+                "Please use the same timestep or start a new simulation."
+                )
 
         snapshot_path = os.path.join(dir_path, "simulation_snapshot")
         previous_snaps = natsorted(glob.glob(os.path.join(snapshot_path, "*")))
@@ -272,8 +271,13 @@ def run_simulation(
         energy_arr = []
         E0 = nemesis.calculate_total_energy()
 
+    if star_evol:
+        approx_radii = False
+    else:
+        approx_radii = True
+    
     if snapshot_no == 0:
-        allparts = nemesis.particles.all()
+        allparts = nemesis.particles.all(approx_radii)
         write_set_to_file(
             allparts.savepoint(0 | units.Myr),
             snap_path.format(0), 'amuse',
@@ -311,7 +315,7 @@ def run_simulation(
 
             snapshot_no += 1
             fname = snap_path.format(snapshot_no)
-            allparts = nemesis.particles.all()
+            allparts = nemesis.particles.all(approx_radii)
             write_set_to_file(
                 allparts.savepoint(nemesis.model_time),
                 fname, 'amuse',
@@ -334,7 +338,7 @@ def run_simulation(
             t1 = time.time()
             print(f"Step took {t1-t0} seconds")
 
-    allparts = nemesis.particles.all()
+    allparts = nemesis.particles.all(approx_radii)
     write_set_to_file(
         allparts.savepoint(nemesis.model_time),
         snap_path.format(snapshot_no+1), 'amuse',

@@ -11,6 +11,9 @@ import numpy as np
 from amuse.datamodel import Particle, Particles, ParticlesOverlay
 from amuse.units import units
 
+from src.environment_functions import planet_radius, ZAMS_radius
+from src.globals import MIN_EVOL_MASS
+
 
 class HierarchicalParticles(ParticlesOverlay):
     """Class to make particle set"""
@@ -171,10 +174,12 @@ class HierarchicalParticles(ParticlesOverlay):
 
         ParticlesOverlay.remove_particles(self, parts)
 
-    def all(self) -> Particles:
+    def all(self, approx_radii=False) -> Particles:
         """
         Get copy of complete particle set. Children are shifted
         to their parent position and velocity.
+        Args:
+            approx_radii (bool): Flag to change particle radius.
         Returns:
             Particles:  Complete data on simulated particle set.
         """
@@ -189,5 +194,13 @@ class HierarchicalParticles(ParticlesOverlay):
             chd_set.position += parent.position
             chd_set.velocity += parent.velocity
             chd_set.syst_id = system_id + 1
+
+        if approx_radii:
+            star_mask = parts.mass > MIN_EVOL_MASS
+            stars = parts[star_mask]
+            planets = parts[~star_mask]
+            stars.radius = ZAMS_radius(stars.mass)
+            for p in planets:
+                p.radius = planet_radius(p.mass)
 
         return parts

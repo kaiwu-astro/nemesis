@@ -457,12 +457,6 @@ class Nemesis(object):
                         attributes=["mass", "radius"],
                         target_names=["mass", "radius"]
                         ),
-                "from_star_to_children":
-                    self.stellar_code.particles.new_channel_to(
-                        children,
-                        attributes=["age", "relative_age"],
-                        target_names=["age", "relative_age"]
-                        ),
                 "from_gravity_to_children":
                     code_set.new_channel_to(
                         children,
@@ -509,29 +503,25 @@ class Nemesis(object):
             pid = pid_dictionary[parent_key]
             self.resume_workers(pid)
             channel["from_star_to_gravity"].copy()
-            channel["from_star_to_children"].copy()
             self.hibernate_workers(pid)
 
-    def _sync_grav_to_local(self, child_sync=True) -> None:
-        """Sync gravity particles to local set"""
-        if child_sync:
-            pid_dictionary = self._pid_workers
-            for parent_key, channel in self._child_channels.items():
-                pid = pid_dictionary[parent_key]
-                self.resume_workers(pid)
-                channel["from_gravity_to_children"].copy()
-                self.hibernate_workers(pid)
+    def _sync_grav_to_local(self) -> None:
+        """Sync gravity particles to local child set"""
+        pid_dictionary = self._pid_workers
+        for parent_key, channel in self._child_channels.items():
+            pid = pid_dictionary[parent_key]
+            self.resume_workers(pid)
+            channel["from_gravity_to_children"].copy()
+            self.hibernate_workers(pid)
 
-    def _sync_local_to_grav(self, child_sync=True) -> None:
-        """Sync local particle set to global integrator"""
-        self.particles.recenter_children(max_workers=self.num_workers)
-        if child_sync:
-            pid_dictionary = self._pid_workers
-            for parent_key, channel in self._child_channels.items():
-                pid = pid_dictionary[parent_key]
-                self.resume_workers(pid)
-                channel["from_children_to_gravity"].copy()
-                self.hibernate_workers(pid)
+    def _sync_local_to_grav(self) -> None:
+        """Sync local child set set to gravity particles"""
+        pid_dictionary = self._pid_workers
+        for parent_key, channel in self._child_channels.items():
+            pid = pid_dictionary[parent_key]
+            self.resume_workers(pid)
+            channel["from_children_to_gravity"].copy()
+            self.hibernate_workers(pid)
 
     def evolve_model(self, tend: units.time, timestep=None) -> None:
         """
@@ -558,6 +548,10 @@ class Nemesis(object):
                     self.children,
                     dt=timestep
                 )
+                self.particles.recenter_children(
+                    self.num_workers
+                )
+                self._sync_local_to_grav()
 
             # Drift step
             self._drift_global(
@@ -570,12 +564,12 @@ class Nemesis(object):
 
             # Star evolution
             if (self.__star_evol):
-                self._stellar_evolution(self.model_time + 0.5 * timestep)
+                self._stellar_evolution(
+                    self.model_time + 0.5 * timestep
+                )
                 self._star_channel_copier()
 
-            self._sync_local_to_grav()
             split_subcodes(nem_class=self)
-            self._sync_local_to_grav(child_sync=False)
             self._check_single_system()
 
         if self._verbose:  # For diagnostics

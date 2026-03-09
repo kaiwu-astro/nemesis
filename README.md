@@ -20,7 +20,7 @@ This procedure enables:
 - Efficient treatment of extreme scale separations.
 - Seamless inclusion of tidal fields and stellar evolution.  
 
-A full description is given in *Hochart & Portegies Zwart (in prep.)*.  
+A full description is given in [Hochart & Portegies Zwart 2026](https://ui.adsabs.harvard.edu/abs/2026arXiv260303077H/abstract).  
 A demonstration video is available [here](https://youtu.be/cycIn8hDZKY).  
 For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.io/en/latest/install/installing.html).
 
@@ -132,7 +132,8 @@ and dense star clusters](https://www.aanda.org/articles/aa/full_html/2019/04/aa3
 ### Notes:
 - Children require a ```syst_id``` particle attribute, with ```syst_id > 0``` forming children systems.
 - ```Nemesis``` uses sockets instead of MPI for child subsystems. This is because ```Nemesis``` relies heavily on hibernation/resumption cycles for its child integrators. The persistent stop/start cycles go against MPI philosophy of requiring processes to remain synchronised and active constantly. As such, interrupting or suspending workers mid-communication may lead to crashes. When a large number of children is present, this is bound to happen. Instead, sockets work as independent processes, making them more stable to the stop/start cycles.
+- Stellar radii in snapshots correspond to their ZAMS radius.
 
 ### Citation:
 If you use ```Nemesis``` in scientific work, please cite:
-2019A&A...624A.120V, Hochart & Portegies Zwart (in prep.)
+2019A&A...624A.120V, 2026arXiv260303077H
