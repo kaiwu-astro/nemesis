@@ -38,13 +38,13 @@ For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.
     ```cd nemesis```
     ```conda install --file requirements.txt``` <br />
 3. **Install AMUSE packages**. Make sure these AMUSE packages are installed: `huayno` `ph4` `seba` `symple`. If not, this command can be used during your [AMUSE installation](https://amuse.readthedocs.io/en/latest/install/installing.html)  `./setup install amuse-framework amuse-huayno amuse-ph4 amuse-seba amuse-symple` <br />
-3. **Compile C++ files**. These are used to calculate the correction kicks between children systems and parents, synchronising the micro- and macro-state: <br />
+4. **Compile C++ files**. These are used to calculate the correction kicks between children systems and parents, synchronising the micro- and macro-state: <br />
     ```cd src/cpp && make``` <br />
-4. **Generate initial conditions**. For instance: <br />
+5. **Generate initial conditions**. For instance: <br />
     ```cd examples/```
     ```python basic_cluster/particle_initialiser.py```
     This will create a particle set with several planetary systems. The particle set is always saved in a folder ```ICs/```.
-5. **Run the simulation**. From the project root: <br />
+6. **Run the simulation**. From the project root: <br />
     ```python main.py```
    If, instead, you wish to simulate your system for 1 Myr with a bridge time step of 100 yr:
    ```python main.py --tend=1Myr --dtbridge=100yr```
