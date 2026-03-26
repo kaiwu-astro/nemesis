@@ -28,6 +28,13 @@ testpaths = [
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+exclude = [
+  "main.py",
+  "src",
+  "examples",
+  "tests/ZKL_test",
+  "tests/cluster_test",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
