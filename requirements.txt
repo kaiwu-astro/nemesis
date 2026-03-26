@@ -1,3 +1,4 @@
+# Runtime pure-Python dependencies only; AMUSE community packages are installed separately.
 numpy
 natsort
 tables

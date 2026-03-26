@@ -54,6 +54,14 @@ NOTES:
 - Runs can be resumed automatically. However, if any simulation parameters are changed when resuming, while a warning message is printed, the simulation will proceed.
 - ```Nemesis``` must be run from the same Python environment used to compile the C++ extension.
 
+### Linting and Lightweight Unit Tests
+- This repository now includes a minimal `pyproject.toml` baseline with `ruff` and `pytest` configuration.
+- Recommended commands:
+  - `ruff check .`
+  - `python -m pytest tests/unit`
+- These commands are intended to run with pure-Python dependencies only and do not require AMUSE.
+- No `Makefile` is provided; use the commands above directly.
+
 ### Output Structure
 At runtime, ```Nemesis``` automatically creates output directories for a given run. These are hosted under `data/`:
 - **`simulation_snapshot/`** – HDF5 particle snapshots.
