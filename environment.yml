@@ -1,0 +1,28 @@
+name: nemesis-dev
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Base Python runtime used by pure-Python workflows and lint/test loops.
+  - python>=3.10
+  - pip
+  - numpy
+  - natsort
+  - tables
+  - h5py
+  - psutil
+  - scikit-learn
+
+  # Development tooling for local quality checks.
+  - pytest
+  - ruff
+
+  # AMUSE stack + commonly used community codes for scientific runs.
+  # Remove these entries to provision a smaller "base-dev" environment.
+  - amuse-framework
+  - amuse-huayno
+  - amuse-ph4
+  - amuse-seba
+  - amuse-symple
+  - amuse-kepler

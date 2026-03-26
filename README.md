@@ -35,12 +35,18 @@ For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.
 ### Installation & Running
 1. **Cloning**: <br />
     ```git clone https://github.com/ErwanH29/nemesis.git```
-2. **Install dependencies**: <br />
+2. **Create a reproducible environment**: <br />
     ```cd nemesis```
-    ```conda install --file requirements.txt``` <br />
-    `requirements.txt` lists runtime Python dependencies only and intentionally excludes AMUSE community packages.
-3. **Install recommended AMUSE packages**.  `huayno` `ph4` `seba` `symple` `kepler`. If not, this command can be used during your [AMUSE installation](https://amuse.readthedocs.io/en/latest/install/installing.html)  `./setup install amuse-framework amuse-huayno amuse-ph4 amuse-seba amuse-symple amuse-kepler` <br />
-4. **Compile C++ files**. These are used to calculate the correction kicks between children systems and parents, synchronising the micro- and macro-state: <br />
+    ```conda env create -f environment.yml```
+    ```conda activate nemesis-dev``` <br />
+    `environment.yml` includes both runtime Python dependencies and development tooling (`pytest`, `ruff`). It also includes AMUSE + common community codes by default for scientific runs.
+3. **Run environment diagnostics first** (recommended): <br />
+    ```python scripts/check_env.py``` <br />
+    The report indicates which environment tier you currently satisfy:
+    - `base-dev`: pure-Python linting and unit test workflows only (no AMUSE required).
+    - `amuse-dev`: includes AMUSE and key community codes (`Huayno`, `Ph4`, `SeBa`, `Symple`, `Kepler`).
+    - `full-regression`: `amuse-dev` + compiled C++ extension for heavier scientific/regression checks.
+4. **Compile C++ files** when aiming for full-regression/scientific runs. These are used to calculate the correction kicks between children systems and parents, synchronising the micro- and macro-state: <br />
     ```cd src/cpp && make``` <br />
 5. **Generate initial conditions**. For instance: <br />
     ```cd examples/```
