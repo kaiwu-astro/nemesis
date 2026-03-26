@@ -23,6 +23,9 @@ htmlcov/
 *.a
 *.d
 src/build/
+build/
+dist/
+*.egg-info/
 
 # Nemesis runtime outputs
 data/
