@@ -30,6 +30,7 @@ For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.
 - C++ compiler with C++11 support
 - OpenMP support
 - Conda environment recommended
+- `ruff` and `pytest` for linting + unit test workflows
 
 ### Installation & Running
 1. **Cloning**: <br />
@@ -37,6 +38,7 @@ For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.
 2. **Install dependencies**: <br />
     ```cd nemesis```
     ```conda install --file requirements.txt``` <br />
+    `requirements.txt` lists runtime Python dependencies only and intentionally excludes AMUSE community packages.
 3. **Install recommended AMUSE packages**.  `huayno` `ph4` `seba` `symple` `kepler`. If not, this command can be used during your [AMUSE installation](https://amuse.readthedocs.io/en/latest/install/installing.html)  `./setup install amuse-framework amuse-huayno amuse-ph4 amuse-seba amuse-symple amuse-kepler` <br />
 4. **Compile C++ files**. These are used to calculate the correction kicks between children systems and parents, synchronising the micro- and macro-state: <br />
     ```cd src/cpp && make``` <br />
@@ -49,6 +51,12 @@ For AMUSE installation instructions, see [this guide](https://amuse.readthedocs.
    If, instead, you wish to simulate your system for 1 Myr with a bridge time step of 100 yr:
    ```python main.py --tend=1Myr --dtbridge=100yr```
    Command-line arguments are documented in main.py.
+
+### Linting & Unit Tests (pure Python baseline)
+- Run linting from the repository root:
+  - `ruff check tests/unit`
+- Run the lightweight unit test suite from the repository root:
+  - `python -m pytest tests/unit`
 
 NOTES: 
 - Runs can be resumed automatically. However, if any simulation parameters are changed when resuming, while a warning message is printed, the simulation will proceed.
