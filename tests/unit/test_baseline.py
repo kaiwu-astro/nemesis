@@ -5,10 +5,6 @@ from pathlib import Path
 import tomllib
 
 
-def test_unit_test_scaffold_is_active():
-    assert True
-
-
 def test_pyproject_contains_baseline_tooling_configuration():
     pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
 
